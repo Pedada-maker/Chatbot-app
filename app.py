@@ -145,6 +145,29 @@ if "messages" not in st.session_state:
 # Layout
 st.markdown('<h1 class="main-header">🏴‍☠️ Career Navigator</h1>', unsafe_allow_html=True)
 st.markdown('<p class="tagline">Set Sail for Your Dream Career! 🏴‍☠️</p>', unsafe_allow_html=True)
+
+# Career exploration icons
+st.markdown("### 🗺️ Explore Career Treasures:")
+career_cols = st.columns(6)
+careers = [
+    ("🏗️", "Engineering", "I'm interested in engineering and building things"),
+    ("⚕️", "Medical", "I want to know about medical careers"),
+    ("💼", "Business", "Tell me about business and finance careers"),
+    ("🎨", "Creative", "I'm interested in arts and creative fields"),
+    ("🔬", "Science", "I love science and research"),
+    ("👩‍🏫", "Education", "I want to teach and educate others")
+]
+
+for i, (icon, name, prompt) in enumerate(careers):
+    with career_cols[i]:
+        if st.button(f"{icon}\n{name}", key=f"career_{i}", help=f"Explore {name} careers"):
+            st.session_state.messages.append({"role": "user", "content": prompt})
+            with st.spinner("🏴‍☠️ Luffy is thinking..."):
+                luffy_response = get_luffy_response(prompt, st.session_state.messages)
+                st.session_state.messages.append({"role": "assistant", "content": luffy_response})
+            st.rerun()
+
+st.markdown("---")
 col1, col2, col3 = st.columns([1, 3, 1])
 
 with col2:
@@ -166,8 +189,9 @@ with col2:
             st.session_state.messages.append({"role": "user", "content": user_input})
             
             # Get Luffy's response
-            luffy_response = get_luffy_response(user_input, st.session_state.messages)
-            st.session_state.messages.append({"role": "assistant", "content": luffy_response})
+            with st.spinner("🏴‍☠️ Luffy is thinking..."):
+                luffy_response = get_luffy_response(user_input, st.session_state.messages)
+                st.session_state.messages.append({"role": "assistant", "content": luffy_response})
             
             # Rerun to show new messages
             st.rerun()
