@@ -57,6 +57,12 @@ st.markdown("""
         border-radius: 10px;
         margin: 10px 0;
     }
+    .input-container {
+        margin-top: 20px;
+        padding: 15px;
+        background: rgba(255, 255, 255, 0.8);
+        border-radius: 15px;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -133,7 +139,7 @@ def get_luffy_response(user_message, chat_history):
 if "messages" not in st.session_state:
     st.session_state.messages = [{
         "role": "assistant",
-        "content": "🏴‍☠️ Yosh! I'm Luffy! Tell me what subjects you're studying and I’ll help you find your treasure career! Let's go! ⚓"
+        "content": "🏴‍☠️ Yosh! I'm Luffy! Tell me what subjects you're studying and I'll help you find your treasure career! Let's go! ⚓"
     }]
 
 # Layout
@@ -152,4 +158,31 @@ with col2:
 
     st.markdown('<div class="input-container">', unsafe_allow_html=True)
     with st.form(key="chat_form", clear_on_submit=True):
-        user_input = st.text_in
+        user_input = st.text_input("Ask Luffy about careers:", placeholder="e.g., I like math and science...")
+        submit_button = st.form_submit_button("Send 🚀")
+        
+        if submit_button and user_input:
+            # Add user message
+            st.session_state.messages.append({"role": "user", "content": user_input})
+            
+            # Get Luffy's response
+            luffy_response = get_luffy_response(user_input, st.session_state.messages)
+            st.session_state.messages.append({"role": "assistant", "content": luffy_response})
+            
+            # Rerun to show new messages
+            st.rerun()
+    
+    st.markdown('</div>', unsafe_allow_html=True)
+
+# Sidebar with tips
+with st.sidebar:
+    st.markdown("### 🗺️ Navigation Tips")
+    st.info("💡 **Ask Luffy about:**\n- Your favorite subjects\n- Career options\n- Skills needed\n- Educational paths")
+    
+    st.markdown("### 🔧 Troubleshooting")
+    if st.button("Clear Chat"):
+        st.session_state.messages = [{
+            "role": "assistant",
+            "content": "🏴‍☠️ Yosh! I'm Luffy! Tell me what subjects you're studying and I'll help you find your treasure career! Let's go! ⚓"
+        }]
+        st.rerun()
